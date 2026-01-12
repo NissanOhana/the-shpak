@@ -53,6 +53,12 @@ async function fetchDepartments(): Promise<string[]> {
   return res.json()
 }
 
+async function fetchCourseNames(): Promise<Record<string, string>> {
+  const res = await fetch('/the-shpak/data/course-names.json')
+  if (!res.ok) throw new Error('Failed to fetch course names')
+  return res.json()
+}
+
 export function PriceExplorer() {
   const [search, setSearch] = useState("")
   const [sortField, setSortField] = useState<SortField>("price")
@@ -77,14 +83,21 @@ export function PriceExplorer() {
     queryFn: fetchDepartments,
   })
 
+  const { data: courseNames = {} } = useQuery({
+    queryKey: ['courseNames'],
+    queryFn: fetchCourseNames,
+  })
+
   // Filter and sort courses
   const filteredCourses = useMemo(() => {
     let result = courses.filter((c) => {
-      // Search filter
+      // Search filter - also search in course names
+      const courseName = courseNames[c.courseCode] || ''
       const matchesSearch =
         c.section.toLowerCase().includes(search.toLowerCase()) ||
         c.courseCode.toLowerCase().includes(search.toLowerCase()) ||
-        c.department.toLowerCase().includes(search.toLowerCase())
+        c.department.toLowerCase().includes(search.toLowerCase()) ||
+        courseName.toLowerCase().includes(search.toLowerCase())
 
       // Department filter
       const matchesDept = department === "all" || c.department === department
@@ -119,7 +132,7 @@ export function PriceExplorer() {
     })
 
     return result
-  }, [courses, search, department, priceRange, sortField, sortOrder])
+  }, [courses, search, department, priceRange, sortField, sortOrder, courseNames])
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
@@ -329,9 +342,16 @@ export function PriceExplorer() {
                       className="border-b transition-colors hover:bg-muted/50 cursor-pointer"
                       onClick={() => setExpandedCourse(expandedCourse === course.section ? null : course.section)}
                     >
-                      <td className="p-4 align-middle font-mono text-sm">
-                        {course.courseCode}
-                        <span className="text-muted-foreground">-{course.section.slice(7)}</span>
+                      <td className="p-4 align-middle">
+                        <div className="font-mono text-sm">
+                          {course.courseCode}
+                          <span className="text-muted-foreground">-{course.section.slice(7)}</span>
+                        </div>
+                        {courseNames[course.courseCode] && (
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            {courseNames[course.courseCode]}
+                          </div>
+                        )}
                       </td>
                       <td className="p-4 align-middle">
                         <Badge variant="outline">{course.department}</Badge>
@@ -379,7 +399,7 @@ export function PriceExplorer() {
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
                               <h4 className="font-semibold">
-                                {course.courseCode} Price History ({course.prices.length} terms)
+                                {course.courseCode}{courseNames[course.courseCode] ? `: ${courseNames[course.courseCode]}` : ''} ({course.prices.length} terms)
                               </h4>
                               <div className="text-sm text-muted-foreground">
                                 Avg: {formatPrice(course.avgPrice)} | Latest: {formatPrice(course.latestPrice)} | Predicted: {formatPrice(course.predictedPrice)}
