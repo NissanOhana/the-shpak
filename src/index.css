@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  /* Wharton-inspired color palette */
+  --color-primary: #004785;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #A90533;
+  --color-secondary-foreground: #ffffff;
+  --color-accent: #D7BC6A;
+  --color-accent-foreground: #1a1a2e;
+
+  /* Base colors */
+  --color-background: #fafafa;
+  --color-foreground: #1a1a2e;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #004785;
+
+  /* Card colors */
+  --color-card: #ffffff;
+  --color-card-foreground: #1a1a2e;
+
+  /* Destructive */
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+
+  /* Success for positive price trends */
+  --color-success: #22c55e;
+  --color-success-foreground: #ffffff;
+
+  /* Warning for high prices */
+  --color-warning: #f59e0b;
+  --color-warning-foreground: #1a1a2e;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Border radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Fonts */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: #0a0a0f;
+    --color-foreground: #fafafa;
+    --color-muted: #27272a;
+    --color-muted-foreground: #a1a1aa;
+    --color-border: #27272a;
+    --color-input: #27272a;
+    --color-card: #18181b;
+    --color-card-foreground: #fafafa;
+    --color-primary: #3b82f6;
+    --color-ring: #3b82f6;
+  }
+}
+
+/* Base styles */
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  margin: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
